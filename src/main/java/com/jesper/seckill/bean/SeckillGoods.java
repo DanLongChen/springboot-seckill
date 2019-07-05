@@ -3,14 +3,30 @@ package com.jesper.seckill.bean;
 import java.util.Date;
 
 /**
- * Created by jiangyunxiong on 2018/5/22.
+ * Created by DanLongChen on 2019/5/22.
+ * 表示用于秒杀的商品
  */
 public class SeckillGoods {
+    /**
+     * 秒杀商品ID
+     */
     private Long id;
+    /**
+     * 对应的商品ID
+     */
     private Long goodsId;
+    /**
+     * 库存
+     */
     private Integer stockCount;
+    /**
+     * 开始，结束时间
+     */
     private Date startDate;
     private Date endDate;
+    /**
+     * 版本
+     */
     private int version;
 
     public int getVersion() {

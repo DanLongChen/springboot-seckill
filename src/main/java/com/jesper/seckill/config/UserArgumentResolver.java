@@ -16,7 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Created by jiangyunxiong on 2018/5/22.
+ * Created by DanLongChen on 2019/5/22.
+ * 参数解析器，也就是把传入的User变量解析为token
  */
 @Service
 public class UserArgumentResolver implements HandlerMethodArgumentResolver {
@@ -42,12 +43,15 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
      */
     @Override
     public Object resolveArgument(MethodParameter methodParameter, ModelAndViewContainer modelAndViewContainer, NativeWebRequest nativeWebRequest, WebDataBinderFactory webDataBinderFactory) throws Exception {
+        /**
+         * 获取原始的httpServeletRequest，然后获取其中的token
+         */
         HttpServletRequest request = nativeWebRequest.getNativeRequest(HttpServletRequest.class);
         HttpServletResponse response = nativeWebRequest.getNativeResponse(HttpServletResponse.class);
 
-        String paramToken = request.getParameter(UserService.COOKIE_NAME_TOKEN);
-        String cookieToken = getCookieValue(request, UserService.COOKIE_NAME_TOKEN);
-        if (StringUtils.isEmpty(cookieToken) && StringUtils.isEmpty(paramToken)) {
+        String paramToken = request.getParameter(UserService.COOKIE_NAME_TOKEN);//获取token参数
+        String cookieToken = getCookieValue(request, UserService.COOKIE_NAME_TOKEN);//遍历所有的cookie，看看有没有token对应的cookie（这里也就是把token放在cookie中存放了）
+        if (StringUtils.isEmpty(cookieToken) && StringUtils.isEmpty(paramToken)) {//两者都为空，则返回空，表示用户还没有登录过
             return null;
         }
         String token = StringUtils.isEmpty(paramToken) ? cookieToken : paramToken;
@@ -56,11 +60,11 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
 
     //遍历所有cookie，找到需要的那个cookie
     private String getCookieValue(HttpServletRequest request, String cookiName) {
-        Cookie[] cookies = request.getCookies();
+        Cookie[] cookies = request.getCookies();//获取所有的cookie
         if (cookies == null || cookies.length <= 0) {
             return null;
         }
-        for (Cookie cookie : cookies) {
+        for (Cookie cookie : cookies) {//进行遍历，若
             if (cookie.getName().equals(cookiName)) {
                 return cookie.getValue();
             }

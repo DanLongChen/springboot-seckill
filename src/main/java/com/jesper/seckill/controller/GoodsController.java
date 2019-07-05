@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
- * Created by jiangyunxiong on 2018/5/22.
+ * Created by DanLongChen on 2019/5/22.
  */
 @Controller
 @RequestMapping("/goods")
@@ -59,15 +59,22 @@ public class GoodsController {
         if (!StringUtils.isEmpty(html)) {
             return html;
         }
+        /**
+         * 缓存中找不到，则查询数据库
+         */
         List<GoodsVo> goodsList = goodsService.listGoodsVo();
         model.addAttribute("user", user);
         model.addAttribute("goodsList", goodsList);
 
-        //手动渲染
+        /**
+         * 进行手动渲染
+         */
         SpringWebContext ctx = new SpringWebContext(request, response,
-                request.getServletContext(), request.getLocale(), model.asMap(), applicationContext);
-        html = thymeleafViewResolver.getTemplateEngine().process("goods_list", ctx);
-
+                request.getServletContext(), request.getLocale(), model.asMap(), applicationContext);//将model作为map（键值对）返回
+        html = thymeleafViewResolver.getTemplateEngine().process("goods_list", ctx);//获取模板引擎实例，并且处理模板
+        /**
+         * 这里的html也就是网页上常见的html格式，如果说这个模板不为空，则加入缓存
+         */
         if (!StringUtils.isEmpty(html)) {
             redisService.set(GoodsKey.getGoodsList, "", html);
         }
@@ -90,7 +97,9 @@ public class GoodsController {
             return html;
         }
 
-        //根据id查询商品详情
+        /**
+         * 根据id从数据库查询商品详情
+         */
         GoodsVo goods = goodsService.getGoodsVoByGoodsId(goodsId);
         model.addAttribute("goods", goods);
 

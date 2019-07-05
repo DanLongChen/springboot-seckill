@@ -14,7 +14,7 @@ public class Result<T> {
 	}
 	
 	/**
-	 *  失败时候的调用
+	 *  失败时候的调用（传入错误码）
 	 * */
 	public static  <T> Result<T> error(CodeMsg codeMsg){
 		return new Result<T>(codeMsg);

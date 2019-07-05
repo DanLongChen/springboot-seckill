@@ -3,7 +3,7 @@ package com.jesper.seckill.util;
 import org.apache.commons.codec.digest.DigestUtils;
 
 /**
- * Created by jiangyunxiong on 2018/5/21.
+ * Created by DanLongChen on 2019/5/21.
  */
 public class MD5Util {
 
@@ -11,6 +11,9 @@ public class MD5Util {
         return DigestUtils.md5Hex(src);
     }
 
+    /**
+     * 加密的秘钥
+     */
     private static final String salt = "1a2b3c4d";
 
     /**

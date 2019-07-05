@@ -1,13 +1,14 @@
 package com.jesper.seckill.bean;
 
 /**
- * Created by jiangyunxiong on 2018/5/22.
+ * Created by DanLongChen on 2019/5/22.
+ * //秒杀的订单
  */
 public class SeckillOrder {
     private Long id;
-    private Long userId;
-    private Long  orderId;
-    private Long goodsId;
+    private Long userId;//对应于的用户id
+    private Long  orderId;//对应于的订单id
+    private Long goodsId;//对应于的商品id
     public Long getId() {
         return id;
     }

@@ -1,5 +1,9 @@
 package com.jesper.seckill.redis;
 
+
+/**
+ * 用于设置前缀和过期时间（前缀主要是为了防止重复）
+ */
 public class GoodsKey extends BasePrefix {
 
     private GoodsKey(int expireSeconds, String prefix) {

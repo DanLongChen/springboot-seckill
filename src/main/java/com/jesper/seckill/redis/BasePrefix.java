@@ -1,7 +1,9 @@
 package com.jesper.seckill.redis;
 
 /**
- * Created by jiangyunxiong on 2018/5/21.
+ * Created by DanLongChen on 2019/5/21.
+ *
+ * 为键设置前缀和过期时间
  */
 public abstract class BasePrefix implements KeyPrefix {
 

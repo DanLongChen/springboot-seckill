@@ -3,20 +3,23 @@ package com.jesper.seckill.bean;
 import java.util.Date;
 
 /**
- * Created by jiangyunxiong on 2018/5/22.
+ * Created by DanLongChen on 2018/5/22.
  */
 public class OrderInfo {
+    /**
+     * 订单的ID
+     */
     private Long id;
-    private Long userId;
-    private Long goodsId;
-    private Long  deliveryAddrId;
-    private String goodsName;
-    private Integer goodsCount;
-    private Double goodsPrice;
-    private Integer orderChannel;
-    private Integer status;
-    private Date createDate;
-    private Date payDate;
+    private Long userId;//用户ID
+    private Long goodsId;//商品ID
+    private Long  deliveryAddrId;//交货地址
+    private String goodsName;//商品名称
+    private Integer goodsCount;//商品数量
+    private Double goodsPrice;//商品价格
+    private Integer orderChannel;//订单的通道(1:在线，2：安卓，3：IOS)
+    private Integer status;//状态
+    private Date createDate;//创建时间
+    private Date payDate;//支付时间
     public Long getId() {
         return id;
     }

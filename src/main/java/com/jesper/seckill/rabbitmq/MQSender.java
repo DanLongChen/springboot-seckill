@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * Created by jiangyunxiong on 2018/5/29.
+ * Created by DanLongChen on 2019/5/29.
  */
 @Service
 public class MQSender {
@@ -34,6 +34,9 @@ public class MQSender {
 	public void sendSeckillMessage(SeckillMessage message){
         String msg = RedisService.beanToString(message);
         log.info("send message:"+msg);
+        /**
+         * 发送到默认交换器上，key=MQConfig.QUEUE，消息=msg
+         */
         amqpTemplate.convertAndSend(MQConfig.QUEUE, msg);
 
     }

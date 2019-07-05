@@ -5,14 +5,15 @@ import com.jesper.seckill.bean.Goods;
 import java.util.Date;
 
 /**
- * Created by jiangyunxiong on 2018/5/22.
+ * Created by DanLongChen on 2019/5/22.
+ * 商品详情信息
  */
 public class GoodsVo extends Goods {
-    private Double seckillPrice;
-    private Integer stockCount;
-    private Date startDate;
-    private Date endDate;
-    private Integer version;
+    private Double seckillPrice;//秒杀的价格
+    private Integer stockCount;//余量
+    private Date startDate;//开始时间
+    private Date endDate;//结束时间
+    private Integer version;//并发级别
 
     public Integer getStockCount() {
         return stockCount;

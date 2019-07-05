@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * Created by jiangyunxiong on 2018/5/23.
+ * Created by DanLongChen on 2019/5/23.
  */
 @Controller
 @RequestMapping("/user")
@@ -23,6 +23,12 @@ public class UserController {
     @Autowired
     RedisService redisService;
 
+    /**
+     * 直接返回用户信息
+     * @param model
+     * @param user
+     * @return
+     */
     @RequestMapping("/info")
     @ResponseBody
     public Result<User> info(Model model, User user) {

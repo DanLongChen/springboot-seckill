@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 
 /**
- * Created by jiangyunxiong on 2018/5/23.
+ * Created by DanLongChen on 2019/5/23.
  */
 @Service
 public class OrderService {
@@ -46,7 +46,7 @@ public class OrderService {
         orderInfo.setGoodsName(goods.getGoodsName());
         orderInfo.setGoodsPrice(goods.getGoodsPrice());
         orderInfo.setOrderChannel(1);
-        orderInfo.setStatus(0);
+        orderInfo.setStatus(0);//0是新建但是未支付
         orderInfo.setUserId(user.getId());
         orderMapper.insert(orderInfo);
 
@@ -56,6 +56,9 @@ public class OrderService {
         seckillOrder.setUserId(user.getId());
         orderMapper.insertSeckillOrder(seckillOrder);
 
+        /**
+         * 将订单加入缓存
+         */
         redisService.set(OrderKey.getSeckillOrderByUidGid, "" + user.getId() + "_" + goods.getId(), seckillOrder);
 
         return orderInfo;

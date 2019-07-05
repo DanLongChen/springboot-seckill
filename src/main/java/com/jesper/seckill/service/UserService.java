@@ -17,36 +17,39 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Created by jiangyunxiong on 2018/5/22.
+ * Created by DanLongChen on 2019/5/22.
+ *
+ * 实现用户登录的控制逻辑
  */
 @Service
 public class UserService {
 
     @Autowired
-    UserMapper userMapper;
+    UserMapper userMapper;//用于操作持久层
 
     @Autowired
-    RedisService redisService;
+    RedisService redisService;//用于操作redis
 
     public static final String COOKIE_NAME_TOKEN = "token";
 
     public User getById(long id) {
         //对象缓存
-        User user = redisService.get(UserKey.getById, "" + id, User.class);
+        User user = redisService.get(UserKey.getById, "" + id, User.class);//从缓存（String中，bean的话是json）重建bean
         if (user != null) {
             return user;
         }
-        //取数据库
+        /**
+         * 若在缓存中找不到，则先去数据库查询，查询到之后在存入缓存
+         */
         user = userMapper.getById(id);
-        //再存入缓存
         if (user != null) {
-            redisService.set(UserKey.getById, "" + id, user);
+            redisService.set(UserKey.getById, "" + id, user);//把bean转化为String（基本类型直接转，bean的话转化为json）
         }
         return user;
     }
 
     /**
-     * 典型缓存同步场景：更新密码
+     * 典型缓存同步场景：更新密码（这里需要更正一下，应该是更新数据库的时候直接使缓存失效就可以了，不需要再更新缓存）
      */
     public boolean updatePassword(String token, long id, String formPass) {
         //取user
@@ -54,15 +57,17 @@ public class UserService {
         if(user == null) {
             throw new GlobalException(CodeMsg.MOBILE_NOT_EXIST);
         }
+        //使缓存失效（懒加载思想）
+        redisService.delete(UserKey.getById, ""+id);
         //更新数据库
         User toBeUpdate = new User();
         toBeUpdate.setId(id);
         toBeUpdate.setPassword(MD5Util.formPassToDBPass(formPass, user.getSalt()));
         userMapper.update(toBeUpdate);
-        //更新缓存：先删除再插入
-        redisService.delete(UserKey.getById, ""+id);
-        user.setPassword(toBeUpdate.getPassword());
-        redisService.set(UserKey.token, token, user);
+//        //更新缓存：先删除再插入
+//        redisService.delete(UserKey.getById, ""+id);
+//        user.setPassword(toBeUpdate.getPassword());
+//        redisService.set(UserKey.token, token, user);
         return true;
     }
 
@@ -72,19 +77,25 @@ public class UserService {
         }
         String mobile = loginVo.getMobile();
         String formPass = loginVo.getPassword();
-        //判断手机号是否存在
+        /**
+         * 通过手机号获取用户（也就是判断用户是否存在）
+         */
         User user = getById(Long.parseLong(mobile));
         if (user == null) {
             throw new GlobalException(CodeMsg.MOBILE_NOT_EXIST);
         }
-        //验证密码
+        /**
+         * 密码验证，也就是将用户的密码进行编码之后和数据库中的密码进行验证
+         */
         String dbPass = user.getPassword();
         String saltDB = user.getSalt();
         String calcPass = MD5Util.formPassToDBPass(formPass, saltDB);
         if (!calcPass.equals(dbPass)) {
             throw new GlobalException(CodeMsg.PASSWORD_ERROR);
         }
-        //生成唯一id作为token
+        /**
+         * 生成token，加入cookie再返回给客户端
+         */
         String token = UUIDUtil.uuid();
         addCookie(response, token, user);
         return token;

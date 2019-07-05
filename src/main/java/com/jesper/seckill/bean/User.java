@@ -3,9 +3,12 @@ package com.jesper.seckill.bean;
 import java.util.Date;
 
 /**
- * Created by jiangyunxiong on 2018/5/22.
+ * Created by DanLongChen on 2019/5/22.
  */
 public class User {
+    /**
+     * 用户id（手机号表示）
+     */
     private Long id;
     private String nickname;
     private String password;

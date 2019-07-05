@@ -1,15 +1,37 @@
 package com.jesper.seckill.bean;
 
 /**
- * Created by jiangyunxiong on 2018/5/22.
+ * Created by DanLongChen on 2019/5/22.
+ * 表示所有的商品，包括商品信息，总的库存等
  */
 public class Goods {
+    /**
+     * 商品的ID号
+     */
     private Long id;
+    /**
+     * 商品名称
+     */
     private String goodsName;
+    /**
+     * 商品的标题
+     */
     private String goodsTitle;
+    /**
+     * 商品图片地址
+     */
     private String goodsImg;
+    /**
+     * 商品详情
+     */
     private String goodsDetail;
+    /**
+     * 商品价格
+     */
     private Double goodsPrice;
+    /**
+     * 存货
+     */
     private Integer goodsStock;
     public Long getId() {
         return id;

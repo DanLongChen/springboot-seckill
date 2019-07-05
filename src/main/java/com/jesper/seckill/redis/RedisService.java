@@ -25,12 +25,12 @@ public class RedisService {
         try {
             jedis = jedisPool.getResource();
             //对key增加前缀，即可用于分类，也避免key重复
-            String realKey = prefix.getPrefix() + key;
-            String str = jedis.get(realKey);
-            T t = stringToBean(str, clazz);
+            String realKey = prefix.getPrefix() + key;//加上前缀，避免重复
+            String str = jedis.get(realKey);//获取对象的json字符串
+            T t = stringToBean(str, clazz);//然后把json转化为bean，这里需要传入class对象，实际上也是使用了反射
             return t;
         } finally {
-            returnToPool(jedis);
+            returnToPool(jedis);//返回给连接池
         }
 
     }

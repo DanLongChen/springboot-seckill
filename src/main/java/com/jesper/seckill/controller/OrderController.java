@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
- * Created by jiangyunxiong on 2018/5/28.
+ * Created by DanLongChen on 2019/5/28.
  */
 @Controller
 @RequestMapping("/order")
@@ -43,15 +43,15 @@ public class OrderController {
         if(user == null) {
             return Result.error(CodeMsg.SESSION_ERROR);
         }
-        OrderInfo order = orderService.getOrderById(orderId);
+        OrderInfo order = orderService.getOrderById(orderId);//获取秒杀商品的信息
         if(order == null) {
             return Result.error(CodeMsg.ORDER_NOT_EXIST);
         }
         long goodsId = order.getGoodsId();
-        GoodsVo goods = goodsService.getGoodsVoByGoodsId(goodsId);
-        OrderDetailVo vo = new OrderDetailVo();
-        vo.setOrder(order);
-        vo.setGoods(goods);
+        GoodsVo goods = goodsService.getGoodsVoByGoodsId(goodsId);//根据id查找指定的商品详情
+        OrderDetailVo vo = new OrderDetailVo();//生成订单详情
+        vo.setOrder(order);//放入订单
+        vo.setGoods(goods);//放入秒杀的商品信息
         return Result.success(vo);
     }
 

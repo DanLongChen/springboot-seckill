@@ -51,7 +51,9 @@ public class SeckillController implements InitializingBean {
     //基于令牌桶算法的限流实现类
     RateLimiter rateLimiter = RateLimiter.create(10);
 
-    //做标记，判断该商品是否被处理过了
+    /**
+     * 用于标记，秒杀的商品是否已经被抢购完了
+     */
     private HashMap<Long, Boolean> localOverMap = new HashMap<Long, Boolean>();
 
     /**
@@ -86,19 +88,29 @@ public class SeckillController implements InitializingBean {
         //预减库存
         long stock = redisService.decr(GoodsKey.getGoodsStock, "" + goodsId);//10
         if (stock < 0) {
+            /**
+             * 然后重新查询数据库
+             */
             afterPropertiesSet();
             long stock2 = redisService.decr(GoodsKey.getGoodsStock, "" + goodsId);//10
+            /**
+             * 重新查询数据库之后，商品的余量还是《0，那么说明秒杀的商品已经被抢购完了
+             */
             if(stock2 < 0){
                 localOverMap.put(goodsId, true);
-                return Result.error(CodeMsg.SECKILL_OVER);
+                return Result.error(CodeMsg.SECKILL_OVER);//返回提示
             }
         }
-        //判断重复秒杀
+        /**
+         * 判断用户是否重复秒杀商品，通过用户ID和商品ID
+         */
         SeckillOrder order = orderService.getOrderByUserIdGoodsId(user.getId(), goodsId);
         if (order != null) {
             return Result.error(CodeMsg.REPEATE_SECKILL);
         }
-        //入队
+        /**
+         * 页面上秒杀成功之后，放入消息队列
+         */
         SeckillMessage message = new SeckillMessage();
         message.setUser(user);
         message.setGoodsId(goodsId);
@@ -107,7 +119,7 @@ public class SeckillController implements InitializingBean {
     }
 
     /**
-     * 系统初始化,将商品信息加载到redis和本地内存
+     * 系统初始化,将商品信息加载到redis和本地内存（当缓存中商品的存量为0的时候，重新从数据库加载）
      */
     @Override
     public void afterPropertiesSet() {
@@ -135,6 +147,9 @@ public class SeckillController implements InitializingBean {
         if (user == null) {
             return Result.error(CodeMsg.SESSION_ERROR);
         }
+        /**
+         * 判断是否已经秒杀结束
+         */
         long orderId = seckillService.getSeckillResult(user.getId(), goodsId);
         return Result.success(orderId);
     }

@@ -5,7 +5,7 @@ import com.jesper.seckill.bean.SeckillOrder;
 import org.apache.ibatis.annotations.*;
 
 /**
- * Created by jiangyunxiong on 2018/5/23.
+ * Created by DanLongChen on 2019/5/23.
  */
 @Mapper
 public interface OrderMapper {
